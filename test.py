@@ -22,8 +22,5 @@ om.autor = "Henryk Sienkiewicz"
 om.liczba_stron = 450
 om.liczba_rozdzialow = 10
 
-pt.opisz()
-om.opisz()
-
 print(pt)
 print(om)

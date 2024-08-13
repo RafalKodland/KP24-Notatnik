@@ -1,5 +1,5 @@
 # Import
-from flask import Flask, render_template,request, redirect
+from flask import Flask, render_template,request, redirect, url_for
 # Podłączenie biblioteki bazy danych
 from flask_sqlalchemy import SQLAlchemy
 
@@ -30,13 +30,16 @@ class Card(db.Model):
     
 
 #Zadanie #2. Utwórz tabelę użytkowników
+class User(db.Model):
+    #id
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    #login
+    login = db.Column(db.String(256), nullable=False)
+    #haslo
+    password = db.Column(db.String(256), nullable=False)
 
-
-
-
-
-
-
+    def __repr__(self):
+        return f'<User {self.id}>'
 
 
 # Uruchamianie strony zawartości
@@ -48,10 +51,13 @@ def login():
             form_password = request.form['password']
             
             # Zadanie #4. Wdrożyć autoryzację
-            
+            users = User.query.all()
 
+            for user in users:
+                if user.login == form_login and user.password == form_password:
+                    return redirect(url_for('index'))
 
-            
+            return render_template('login.html', error="Nie poprawne haslo lub login")
         else:
             return render_template('login.html')
 
@@ -64,11 +70,11 @@ def reg():
         password = request.form['password']
         
         # Zadanie #3. Zadbaj o to, aby dane użytkownika zostały zapisane w bazie danych
-        
-
+        new_user = User(login=login, password=password)
+        db.session.add(new_user)
+        db.session.commit()
         
         return redirect('/')
-    
     else:    
         return render_template('registration.html')
 
